@@ -38,10 +38,6 @@ namespace Receiver
 
                 x.ReceiveEndpoint(host, $"receiver_queue", e =>
                 {
-                    x.UseInMemoryOutbox();
-
-                    e.Consumer<TestHandler>();
-
                     e.UseDelayedRedelivery(r =>
                     {
                         r.Interval(1, TimeSpan.FromMilliseconds(100));
@@ -53,6 +49,10 @@ namespace Receiver
                         r.Interval(1, TimeSpan.FromMilliseconds(100));
                         r.Handle<Exception>();
                     });
+
+                    x.UseInMemoryOutbox();
+
+                    e.Consumer<TestHandler>();
                 });
 
                 x.UseSerilog();
