@@ -34,23 +34,13 @@ namespace Receiver
 
                 x.UseDelayedExchangeMessageScheduler();
 
-                //x.UseInMemoryOutbox();
-
                 x.ReceiveEndpoint(host, $"receiver_queue", e =>
                 {
-                    e.UseDelayedRedelivery(r =>
-                    {
-                        r.Interval(1, TimeSpan.FromMilliseconds(100));
-                        r.Handle<Exception>();
-                    });
+                    e.UseDelayedRedelivery(r => r.Interval(1, TimeSpan.FromMilliseconds(100)));
 
-                    e.UseMessageRetry(r =>
-                    {
-                        r.Interval(1, TimeSpan.FromMilliseconds(100));
-                        r.Handle<Exception>();
-                    });
+                    e.UseMessageRetry(r => r.Interval(1, TimeSpan.FromMilliseconds(100)));
 
-                    x.UseInMemoryOutbox();
+                    e.UseInMemoryOutbox();
 
                     e.Consumer<TestHandler>();
                 });
